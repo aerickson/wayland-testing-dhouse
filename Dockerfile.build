@@ -10,6 +10,7 @@ RUN apt update \
     pkg-config cmake \
     libffi-dev \
     libxml2-dev \
+    libpam-dev \
     libdotconf-dev \
     libneatvnc-dev
 
