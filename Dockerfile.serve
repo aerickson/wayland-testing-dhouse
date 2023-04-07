@@ -1,0 +1,26 @@
+FROM weston
+
+ENV XDG_RUNTIME_DIR=/tmp/wayland \
+    XDG_SESSION_TYPE=wayland \
+    WAYLAND_DISPLAY=wayland-0 \
+    MOZ_ENABLE_WAYLAND=1 \
+    BROWSER_FULLSCREEN=1 \
+    WESTON_BACKEND=rdp \
+    USE_PIXMAN=true \
+    MESA_DEBUG=0 \
+    EGL_LOG_LEVEL=error \
+    LIBGL_DEBUG=error \
+    WAYLAND_DEBUG=0
+
+RUN mkdir "$XDG_RUNTIME_DIR" && chmod 0700 "$XDG_RUNTIME_DIR"
+
+WORKDIR /work
+RUN winpr-makecert -rdp -silent -path ./ -n tls
+
+EXPOSE 3389
+
+CMD weston \
+    --width=1920 --height=1200 --port=3389 --address=0.0.0.0 \
+    --no-clients-resize \
+    --rdp4-key=/work/tls.key \
+    -B "${WESTON_BACKEND}-backend.so" $@
